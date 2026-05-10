@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ManifestResult",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "manifest",
+    "base_dir",
+    "passed",
+    "summary",
+    "outputs",
+    "errors"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "manifest": { "type": "string" },
+    "base_dir": { "type": "string" },
+    "passed": { "type": "boolean" },
+    "summary": {
+      "type": "object",
+      "required": ["expected", "passed", "failed", "missing"],
+      "properties": {
+        "expected": { "type": "integer" },
+        "passed": { "type": "integer" },
+        "failed": { "type": "integer" },
+        "missing": { "type": "integer" }
+      },
+      "additionalProperties": false
+    },
+    "outputs": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "errors": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

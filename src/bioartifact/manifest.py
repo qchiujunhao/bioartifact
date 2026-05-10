@@ -1,0 +1,211 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+from bioartifact.contracts import validate_artifact
+from bioartifact.inspectors import inspect_artifact
+from bioartifact.models import SCHEMA_VERSION
+
+
+def _resolve_path(value: str | Path, base_dir: Path) -> Path:
+    path = Path(value)
+    return path if path.is_absolute() else base_dir / path
+
+
+def _load_manifest(path: Path) -> tuple[dict[str, Any] | None, list[str]]:
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        return None, [f"could not read manifest: {exc}"]
+
+    try:
+        if path.suffix.lower() in {".yaml", ".yml"}:
+            try:
+                import yaml  # type: ignore[import-not-found]
+            except ImportError:
+                return None, [
+                    "YAML manifest support requires PyYAML; use JSON or install the optional YAML dependency"
+                ]
+            payload = yaml.safe_load(text)
+        else:
+            payload = json.loads(text)
+    except Exception as exc:
+        return None, [f"could not parse manifest: {exc}"]
+
+    if not isinstance(payload, dict):
+        return None, ["manifest root must be an object"]
+    return payload, []
+
+
+def validate_manifest(path: str | Path, *, base_dir: str | Path | None = None) -> dict[str, Any]:
+    """Validate expected workflow outputs declared in a JSON or YAML manifest."""
+
+    manifest_path = Path(path)
+    resolved_base = Path(base_dir) if base_dir is not None else manifest_path.parent
+    resolved_base = resolved_base.resolve()
+
+    manifest, load_errors = _load_manifest(manifest_path)
+    if manifest is None:
+        return {
+            "schema_version": SCHEMA_VERSION,
+            "manifest": str(manifest_path),
+            "base_dir": str(resolved_base),
+            "passed": False,
+            "summary": {
+                "expected": 0,
+                "passed": 0,
+                "failed": 0,
+                "missing": 0,
+            },
+            "outputs": [],
+            "errors": load_errors,
+        }
+
+    outputs = manifest.get("outputs")
+    if not isinstance(outputs, list):
+        return {
+            "schema_version": SCHEMA_VERSION,
+            "manifest": str(manifest_path),
+            "base_dir": str(resolved_base),
+            "passed": False,
+            "summary": {
+                "expected": 0,
+                "passed": 0,
+                "failed": 0,
+                "missing": 0,
+            },
+            "outputs": [],
+            "errors": ["manifest must contain an `outputs` array"],
+        }
+
+    records: list[dict[str, Any]] = []
+    missing = 0
+    passed_count = 0
+
+    for index, entry in enumerate(outputs, start=1):
+        if not isinstance(entry, dict):
+            records.append(
+                {
+                    "name": f"output_{index}",
+                    "path": None,
+                    "expected_type": None,
+                    "passed": False,
+                    "inspection": None,
+                    "type_check": {
+                        "passed": False,
+                        "message": "manifest output entry must be an object",
+                    },
+                    "contract": None,
+                    "errors": ["manifest output entry must be an object"],
+                }
+            )
+            continue
+
+        raw_path = entry.get("path")
+        name = str(entry.get("name") or raw_path or f"output_{index}")
+        expected_type = entry.get("type") or entry.get("artifact_type")
+        contract_name = entry.get("contract")
+
+        if not raw_path:
+            records.append(
+                {
+                    "name": name,
+                    "path": None,
+                    "expected_type": expected_type,
+                    "passed": False,
+                    "inspection": None,
+                    "type_check": {
+                        "passed": False,
+                        "message": "manifest output is missing `path`",
+                    },
+                    "contract": None,
+                    "errors": ["manifest output is missing `path`"],
+                }
+            )
+            continue
+
+        artifact_path = _resolve_path(str(raw_path), resolved_base)
+        inspection = inspect_artifact(artifact_path)
+        if not artifact_path.exists():
+            missing += 1
+
+        type_passed = expected_type is None or inspection.artifact_type == expected_type
+        if type_passed:
+            type_message = "artifact type matches manifest expectation"
+        else:
+            type_message = (
+                f"expected artifact type {expected_type!r}, detected {inspection.artifact_type!r}"
+            )
+
+        contract_payload = None
+        contract_passed = True
+        contract_args = dict(entry.get("contract_args") or {})
+        if "mate" in entry:
+            contract_args["mate"] = _resolve_path(str(entry["mate"]), resolved_base)
+        elif "mate" in contract_args:
+            contract_args["mate"] = _resolve_path(str(contract_args["mate"]), resolved_base)
+
+        if contract_name:
+            contract_result = validate_artifact(artifact_path, str(contract_name), **contract_args)
+            contract_payload = contract_result.to_dict()
+            contract_passed = contract_result.passed
+
+        output_passed = inspection.valid and type_passed and contract_passed
+        if output_passed:
+            passed_count += 1
+
+        records.append(
+            {
+                "name": name,
+                "path": str(artifact_path),
+                "expected_type": expected_type,
+                "passed": output_passed,
+                "inspection": inspection.to_dict(),
+                "type_check": {
+                    "passed": type_passed,
+                    "message": type_message,
+                },
+                "contract": contract_payload,
+                "errors": []
+                if output_passed
+                else _manifest_record_errors(
+                    inspection_valid=inspection.valid,
+                    type_passed=type_passed,
+                    contract_passed=contract_passed,
+                ),
+            }
+        )
+
+    failed_count = len(records) - passed_count
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "manifest": str(manifest_path),
+        "base_dir": str(resolved_base),
+        "passed": failed_count == 0,
+        "summary": {
+            "expected": len(records),
+            "passed": passed_count,
+            "failed": failed_count,
+            "missing": missing,
+        },
+        "outputs": records,
+        "errors": [],
+    }
+
+
+def _manifest_record_errors(
+    *,
+    inspection_valid: bool,
+    type_passed: bool,
+    contract_passed: bool,
+) -> list[str]:
+    errors = []
+    if not inspection_valid:
+        errors.append("inspection failed")
+    if not type_passed:
+        errors.append("artifact type mismatch")
+    if not contract_passed:
+        errors.append("contract failed")
+    return errors

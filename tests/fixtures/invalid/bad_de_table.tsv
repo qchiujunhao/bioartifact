@@ -1,0 +1,4 @@
+gene	log2FoldChange	pvalue
+geneA	1.0	0.02
+geneA	2.0	1.50
+

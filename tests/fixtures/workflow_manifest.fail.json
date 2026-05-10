@@ -1,0 +1,22 @@
+{
+  "outputs": [
+    {
+      "name": "missing_vcf",
+      "path": "missing.vcf",
+      "type": "vcf",
+      "contract": "valid_vcf"
+    },
+    {
+      "name": "bad_fastq",
+      "path": "invalid/bad.fastq",
+      "type": "fastq",
+      "contract": "fastq"
+    },
+    {
+      "name": "wrong_type",
+      "path": "variants.vcf",
+      "type": "fastq"
+    }
+  ]
+}
+

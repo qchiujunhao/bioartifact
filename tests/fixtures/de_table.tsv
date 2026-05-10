@@ -1,0 +1,5 @@
+gene	log2FoldChange	pvalue	padj
+geneA	1.25	0.001	0.004
+geneB	-0.80	0.020	0.050
+geneC	0.15	0.700	0.800
+

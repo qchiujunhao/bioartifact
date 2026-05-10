@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ArtifactResult",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "path",
+    "artifact_type",
+    "valid",
+    "summary",
+    "warnings",
+    "errors"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "path": { "type": "string" },
+    "artifact_type": { "type": "string" },
+    "valid": { "type": "boolean" },
+    "summary": { "type": "object" },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "errors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "usable_as": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "suggested_next_steps": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

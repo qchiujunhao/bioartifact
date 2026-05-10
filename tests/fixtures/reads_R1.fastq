@@ -1,0 +1,9 @@
+@synthetic:run1:flowcell1:1:1101:1000:1000/1
+ACGTACGTACGT
++
+FFFFFFFFFFFF
+@synthetic:run1:flowcell1:1:1101:1000:1001/1
+GATTACAGATTA
++
+FFFFFFFFFFFF
+

@@ -1,0 +1,6 @@
+##fileformat=VCFv4.2
+##source=bioartifact-synthetic-fixture
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	sampleA
+chr1	5	.	A	G	60	PASS	DP=12	GT:DP	0/1:12
+chr2	11	.	C	T	50	PASS	DP=8	GT:DP	1/1:8
+

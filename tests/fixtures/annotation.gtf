@@ -1,0 +1,6 @@
+chr1	bioartifact	gene	1	20	.	+	.	gene_id "geneA"; gene_name "GeneA";
+chr1	bioartifact	transcript	1	20	.	+	.	gene_id "geneA"; transcript_id "txA1";
+chr1	bioartifact	exon	1	12	.	+	.	gene_id "geneA"; transcript_id "txA1"; exon_number "1";
+chr2	bioartifact	gene	4	24	.	-	.	gene_id "geneB"; gene_name "GeneB";
+chr2	bioartifact	transcript	4	24	.	-	.	gene_id "geneB"; transcript_id "txB1";
+

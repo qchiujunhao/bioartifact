@@ -1,0 +1,36 @@
+{
+  "outputs": [
+    {
+      "name": "paired_reads",
+      "path": "reads_R1.fastq",
+      "type": "fastq",
+      "contract": "paired_fastq",
+      "mate": "reads_R2.fastq"
+    },
+    {
+      "name": "sorted_alignment",
+      "path": "aligned.sorted.bam",
+      "type": "bam",
+      "contract": "sorted_bam"
+    },
+    {
+      "name": "variants",
+      "path": "variants.vcf.gz",
+      "type": "vcf",
+      "contract": "valid_vcf"
+    },
+    {
+      "name": "peaks",
+      "path": "peaks.narrowPeak",
+      "type": "narrowPeak",
+      "contract": "narrowpeak"
+    },
+    {
+      "name": "de_table",
+      "path": "de_table.tsv",
+      "type": "tsv",
+      "contract": "de_table"
+    }
+  ]
+}
+
