@@ -307,6 +307,20 @@ ruff check .
 pytest
 ```
 
+## Releasing
+
+PyPI publishing is handled by GitHub Actions through PyPI Trusted Publishing.
+For the first release, create a pending publisher on PyPI with:
+
+- PyPI project name: `bioartifact`
+- Owner: `qchiujunhao`
+- Repository name: `bioartifact`
+- Workflow name: `release.yml`
+- Environment name: `pypi`
+
+After the pending publisher is configured, run the `Release` workflow manually
+from GitHub Actions or push a `v*` tag for future releases.
+
 ## Reproducible Fixtures
 
 The repository includes a small fixture suite under `tests/fixtures/` with
