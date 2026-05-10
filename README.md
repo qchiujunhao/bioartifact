@@ -318,8 +318,10 @@ For the first release, create a pending publisher on PyPI with:
 - Workflow name: `release.yml`
 - Environment name: `pypi`
 
-After the pending publisher is configured, run the `Release` workflow manually
-from GitHub Actions or push a `v*` tag for future releases.
+After the pending publisher is configured, publish a GitHub Release from a
+version tag such as `v0.1.0`. The `Release` workflow will build the package and
+publish it to PyPI. Manual `workflow_dispatch` is available from GitHub Actions
+only for retrying a release if needed.
 
 ## Reproducible Fixtures
 
