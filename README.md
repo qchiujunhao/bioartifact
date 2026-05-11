@@ -117,6 +117,7 @@ bioartifact validate-manifest workflow_manifest.json
 ```
 
 Agent-facing CLI usage guidance is available in [SKILLS.md](SKILLS.md).
+The six-month development plan is available in [ROADMAP.md](ROADMAP.md).
 
 ## Output Modes
 
