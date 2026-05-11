@@ -1,8 +1,9 @@
 # Phase Plan
 
-This phase plan describes the near-term development path for `bioartifact`,
-starting from the initial public release. The phases are ordered by dependency
-and maturity rather than fixed calendar dates.
+This phase plan describes the development path for `bioartifact`, starting from
+the initial public release and extending into longer-term package maintenance.
+The phases are ordered by dependency and maturity rather than fixed calendar
+dates.
 
 The goal is to mature `bioartifact` from a useful first release into a reliable
 artifact-validation layer for agents, workflow systems, benchmark platforms, and
@@ -15,6 +16,8 @@ reproducibility pipelines.
 3. Validate structure and workflow compatibility, not biological interpretation.
 4. Add format support conservatively, with fixtures and tests.
 5. Demonstrate real workflow value before expanding the public API.
+6. Keep long-term scope broad enough for community use, without making the core
+   package heavy.
 
 ## Phase 1: Release Stabilization
 
@@ -181,6 +184,162 @@ Exit criteria:
 
 - The repository has stable public releases, clear examples, reliable schemas,
   and enough integration guidance for external workflows to adopt the tool.
+
+## Phase 7: Broader Artifact Coverage
+
+Primary goal: expand the range of bioinformatics artifacts while preserving
+clear contracts and small reproducible fixtures.
+
+Should do:
+
+- Add CRAM support through optional `pysam` integration.
+- Add BigWig and BigBed inspection through optional dependencies.
+- Add H5AD inspection for single-cell workflows with careful summary limits.
+- Add domain-specific table profiles for common RNA-seq, ChIP-seq, ATAC-seq,
+  and metagenomics outputs.
+- Add MultiQC data-table extraction when structured files are available.
+- Define what each new artifact type can and cannot validate.
+- Require fixtures, negative examples, and schema coverage for every new format.
+
+Can do:
+
+- Evaluate mzML, mzIdentML, and proteomics table support.
+- Evaluate RO-Crate metadata inspection if it helps workflow bundles.
+- Add a formal proposal template for new artifact types.
+
+Exit criteria:
+
+- New format support is useful beyond extension detection.
+- Optional integrations do not increase the default installation weight.
+
+## Phase 8: Extension Architecture
+
+Primary goal: let users add inspectors and contracts without modifying
+`bioartifact` itself.
+
+Should do:
+
+- Design a stable plugin interface for third-party inspectors and contracts.
+- Support Python entry points for external artifact types.
+- Add a documented contract authoring guide.
+- Add validation tests for third-party plugin registration.
+- Add clear error messages when optional plugins are missing or incompatible.
+- Keep the built-in registry deterministic and inspectable from the CLI.
+
+Can do:
+
+- Add `bioartifact plugin` discovery commands.
+- Add template repositories for new inspector packages.
+- Add compatibility tests that plugin authors can vendor or run in CI.
+
+Exit criteria:
+
+- External projects can maintain their own format support cleanly.
+- The core package remains small while the ecosystem can grow.
+
+## Phase 9: Workflow Ecosystem Integrations
+
+Primary goal: make `bioartifact` easy to use from workflow systems, CI, and
+benchmark platforms.
+
+Should do:
+
+- Add examples for Snakemake, Nextflow, CWL, WDL, and Galaxy-style validation.
+- Add GitHub Actions examples for validating workflow outputs in CI.
+- Add manifest examples for single-sample and multi-sample workflows.
+- Add failure-mode examples that show how contracts prevent bad downstream
+  steps.
+- Document recommended exit-code handling for automation.
+- Add compact JSON examples suitable for dashboards and benchmark logs.
+
+Can do:
+
+- Add reusable action or container images if demand appears.
+- Add example benchmark tasks that compare expected and observed artifacts.
+- Add integration notes for workflow provenance systems.
+
+Exit criteria:
+
+- A workflow author can adopt `bioartifact` without writing custom glue code.
+- Benchmark systems can consume results directly as structured JSON.
+
+## Phase 10: Performance, Scale, And Robustness
+
+Primary goal: handle realistic file sizes predictably without sacrificing
+determinism.
+
+Should do:
+
+- Define scan modes such as header-only, sampled, bounded, and full validation.
+- Add explicit record and byte limits where full scans are expensive.
+- Add streaming implementations for text formats where practical.
+- Add memory and runtime tests for larger synthetic fixtures.
+- Add regression tests for truncated gzip files, malformed records, empty files,
+  and mixed-delimiter tables.
+- Document performance behavior for each inspector.
+
+Can do:
+
+- Add optional parallel directory summarization.
+- Add profiling benchmarks for common artifact types.
+- Add cacheable file fingerprints for repeated validations.
+
+Exit criteria:
+
+- Large-file behavior is documented, bounded, and testable.
+- Users can choose stronger validation intentionally when runtime cost matters.
+
+## Phase 11: Provenance And Artifact Bundles
+
+Primary goal: move from single-file inspection toward validating coherent
+workflow output sets.
+
+Should do:
+
+- Extend manifests to support grouped artifacts, expected relationships, and
+  required companion files.
+- Add checksum and size metadata for reproducibility records.
+- Add paired-output checks for common workflow products, such as BAM plus index,
+  VCF plus index, peaks plus summits, and count matrix plus metadata.
+- Add bundle summaries that describe a complete workflow output directory.
+- Add machine-readable warnings for missing provenance or ambiguous artifacts.
+
+Can do:
+
+- Add lightweight provenance fields without depending on a workflow engine.
+- Evaluate compatibility with RO-Crate or other research-object metadata.
+- Add export examples for reproducibility reports.
+
+Exit criteria:
+
+- `bioartifact` can validate not only individual files, but also whether an
+  output directory is coherent and usable.
+
+## Phase 12: Governance, Sustainability, And Community
+
+Primary goal: keep the project maintainable as scope and usage grow.
+
+Should do:
+
+- Define a release cadence and support policy.
+- Add deprecation rules for CLI flags, contracts, and JSON fields.
+- Maintain issue labels for formats, contracts, docs, bugs, and integrations.
+- Add security and support guidance appropriate for a validation tool.
+- Track user-requested formats and contracts in public issues.
+- Keep examples, schemas, and fixture provenance synchronized with releases.
+- Add contributor guidance for review expectations and test requirements.
+
+Can do:
+
+- Add a lightweight steering document if multiple contributors become active.
+- Add published case studies after real workflows adopt the package.
+- Add citation metadata and archival releases when the package reaches stable
+  use.
+
+Exit criteria:
+
+- The project has a clear maintenance model, predictable releases, and a path
+  for outside contributors to add meaningful support safely.
 
 ## Cross-Cutting Work
 
