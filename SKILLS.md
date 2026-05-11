@@ -200,7 +200,7 @@ For agent decisions:
 ## Reproducible Examples
 
 The repository includes small synthetic fixtures under `tests/fixtures/`.
-Use them for smoke tests, examples, and JOSS paper demonstrations:
+Use them for smoke tests, examples, and manuscript demonstrations:
 
 ```bash
 PYTHONPATH=src python -m bioartifact inspect tests/fixtures/variants.vcf.gz

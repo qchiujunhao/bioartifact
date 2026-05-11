@@ -117,7 +117,7 @@ bioartifact validate-manifest workflow_manifest.json
 ```
 
 Agent-facing CLI usage guidance is available in [SKILLS.md](SKILLS.md).
-The six-month development plan is available in [ROADMAP.md](ROADMAP.md).
+The development phase plan is available in [PHASE_PLAN.md](PHASE_PLAN.md).
 
 ## Output Modes
 
@@ -330,7 +330,7 @@ The repository includes a small fixture suite under `tests/fixtures/` with
 versioned FASTA, FASTQ, FASTQ.GZ, SAM, BAM, VCF, VCF.GZ, BED, narrowPeak, GTF,
 TSV, and HTML report examples. These files are synthetic but structurally valid,
 small enough for CI, and documented with provenance notes so they can support
-examples in documentation and a future JOSS paper.
+examples in documentation and publication materials.
 
 Binary fixtures are deterministic and can be regenerated with:
 

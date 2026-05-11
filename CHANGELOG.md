@@ -16,5 +16,5 @@ Initial release:
 - Contracts for FASTQ, paired FASTQ, sorted/indexed BAM, narrowPeak,
   differential-expression tables, and valid VCF.
 - Schema-versioned JSON outputs and JSON schemas.
-- Deterministic fixture suite for tests, documentation, and future JOSS examples.
+- Deterministic fixture suite for tests, documentation, and future publication examples.
 - Manifest-based workflow output validation.

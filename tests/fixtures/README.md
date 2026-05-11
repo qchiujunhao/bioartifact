@@ -2,7 +2,7 @@
 
 This directory contains small deterministic bioinformatics artifact fixtures used
 by the test suite and suitable for reproducible examples in documentation and a
-future JOSS paper.
+publication examples.
 
 The fixtures are synthetic but structurally valid examples of real file formats.
 They are intentionally tiny so they can be committed to the repository, reviewed
@@ -31,4 +31,3 @@ python tests/fixtures/scripts/build_binary_fixtures.py
 ```
 
 The script is deterministic and only depends on the Python standard library.
-

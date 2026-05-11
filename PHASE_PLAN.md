@@ -1,7 +1,8 @@
-# Six-Month Roadmap
+# Phase Plan
 
-This roadmap covers the first six months of development for `bioartifact`,
-starting from the initial public release.
+This phase plan describes the near-term development path for `bioartifact`,
+starting from the initial public release. The phases are ordered by dependency
+and maturity rather than fixed calendar dates.
 
 The goal is to mature `bioartifact` from a useful first release into a reliable
 artifact-validation layer for agents, workflow systems, benchmark platforms, and
@@ -13,9 +14,9 @@ reproducibility pipelines.
 2. Make JSON outputs stable enough for downstream automation.
 3. Validate structure and workflow compatibility, not biological interpretation.
 4. Add format support conservatively, with fixtures and tests.
-5. Demonstrate real workflow value before pursuing JOSS submission.
+5. Demonstrate real workflow value before expanding the public API.
 
-## Month 1: Release Stabilization
+## Phase 1: Release Stabilization
 
 Primary goal: make the first public release installable, understandable, and
 safe to depend on experimentally.
@@ -30,7 +31,7 @@ Should do:
 - Add GitHub repository metadata: description, topics, license, and release
   notes.
 - Review README, `SKILLS.md`, schemas, and CLI help for consistency.
-- Create GitHub issues for known follow-up work instead of keeping roadmap
+- Create GitHub issues for known follow-up work instead of keeping plan
   items only in prose.
 - Publish a small `0.1.1` patch release if first users find packaging or docs
   issues.
@@ -47,7 +48,7 @@ Exit criteria:
 - Users can run `bioartifact inspect`, `validate`, `summarize`, `contracts`,
   `types`, and `validate-manifest` from the installed package.
 
-## Month 2: Schema And Contract Hardening
+## Phase 2: Schema And Contract Hardening
 
 Primary goal: make outputs dependable for automated systems.
 
@@ -74,7 +75,7 @@ Exit criteria:
 - A workflow engine can pin `schema_version` and validate CLI JSON output.
 - Contract behavior is documented enough for external users to rely on it.
 
-## Month 3: Format Depth And Optional Integrations
+## Phase 3: Format Depth And Optional Integrations
 
 Primary goal: improve validation depth without making the base package heavy.
 
@@ -100,7 +101,7 @@ Exit criteria:
 - Alignment and variant validation are more useful in real pipelines.
 - Large-file behavior is predictable and documented.
 
-## Month 4: Workflow And Agent Use Cases
+## Phase 4: Workflow And Agent Use Cases
 
 Primary goal: prove that `bioartifact` catches real workflow problems that file
 existence checks miss.
@@ -126,7 +127,7 @@ Exit criteria:
 - The project has at least one end-to-end example that demonstrates practical
   value beyond format parsing.
 
-## Month 5: Documentation, Adoption, And API Stability
+## Phase 5: Documentation, Adoption, And API Stability
 
 Primary goal: make the project easier for external users to evaluate and adopt.
 
@@ -153,38 +154,37 @@ Exit criteria:
 - New contributors can understand how to add a format or contract.
 - External users can judge stability and limitations quickly.
 
-## Month 6: JOSS Readiness
+## Phase 6: Integration And Release Maturity
 
-Primary goal: decide whether the project has enough maturity and evidence for
-JOSS submission.
+Primary goal: make `bioartifact` dependable enough for routine use in
+automation, benchmarking, and reproducibility workflows.
 
 Should do:
 
-- Write a clear statement of need.
-- Add comparison text covering `pysam`, `samtools`, `bcftools`, FastQC,
-  MultiQC, workflow engines, and schema-only validation.
-- Add `paper.md` and `paper.bib` using the JOSS template.
-- Add `CITATION.cff` with real author metadata.
-- Archive a stable release on Zenodo and record the DOI.
-- Add any required authorship, contribution, and reproducibility disclosures
-  for the target venue.
-- Confirm the submitted version matches the archived release.
+- Add versioned example outputs for each supported command.
+- Add a documented compatibility policy for CLI flags, JSON fields, schemas,
+  and contracts.
+- Add release checklists for patch and minor releases.
+- Add integration examples for CI systems and workflow runners.
+- Add a small public gallery of passing and failing fixture cases.
+- Decide which Python APIs are stable enough to document.
+- Prepare a stable minor release after schema, manifest, and contract behavior
+  have been exercised in real examples.
 
 Can do:
 
-- Submit only after there is public development history, a stable release, and
-  evidence of real use.
-- Delay JOSS if the project still lacks external usage or a convincing workflow
-  case study.
+- Add a documentation site if README and `SKILLS.md` are no longer enough.
+- Add optional provenance metadata for workflow outputs.
+- Add a small compatibility test suite that downstream projects can reuse.
 
 Exit criteria:
 
-- The repository has stable public releases, real examples, clear comparison
-  text, and enough usage evidence to support a JOSS submission.
+- The repository has stable public releases, clear examples, reliable schemas,
+  and enough integration guidance for external workflows to adopt the tool.
 
 ## Cross-Cutting Work
 
-These items should continue throughout the six months:
+These items should continue throughout all phases:
 
 - Keep tests fast and deterministic.
 - Avoid heavy required dependencies.
