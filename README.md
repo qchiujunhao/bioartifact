@@ -40,7 +40,7 @@ This repository contains:
 - contracts for FASTQ, paired FASTQ, sorted/indexed BAM, narrowPeak,
   differential-expression tables, and valid VCF
 - schema-versioned JSON outputs
-- CLI discovery commands for supported artifact types and contracts
+- CLI discovery commands for supported artifact types, contracts, and schemas
 - manifest-based workflow output validation
 - directory summarization
 - unit tests and CI configuration
@@ -108,6 +108,13 @@ List supported contracts and artifact types:
 ```bash
 bioartifact contracts
 bioartifact types
+```
+
+List available JSON schemas or print a named schema:
+
+```bash
+bioartifact schema
+bioartifact schema artifact_result
 ```
 
 Validate all expected outputs declared in a manifest:
@@ -278,6 +285,17 @@ is `1.0.0`.
 - Artifact inspection schema: [schemas/artifact_result.schema.json](schemas/artifact_result.schema.json)
 - Contract validation schema: [schemas/contract_result.schema.json](schemas/contract_result.schema.json)
 - Manifest validation schema: [schemas/manifest_result.schema.json](schemas/manifest_result.schema.json)
+- Directory summary schema: [schemas/summary_result.schema.json](schemas/summary_result.schema.json)
+- Contract discovery schema: [schemas/contracts.schema.json](schemas/contracts.schema.json)
+- Artifact type discovery schema: [schemas/artifact_types.schema.json](schemas/artifact_types.schema.json)
+- Schema catalog schema: [schemas/schema_catalog.schema.json](schemas/schema_catalog.schema.json)
+
+The same schemas are available from the installed CLI:
+
+```bash
+bioartifact schema
+bioartifact schema contract_result
+```
 
 Schema files are intended to be part of the user-facing interface for the `1.x`
 line. Additive fields may be introduced in minor releases; breaking output

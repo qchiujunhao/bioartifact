@@ -9,6 +9,7 @@ from pathlib import Path
 
 from bioartifact import inspect_artifact, validate_manifest
 from bioartifact.cli.main import main
+from bioartifact.schema_registry import available_schema_names, get_schema
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
@@ -50,6 +51,11 @@ def assert_matches_schema(
                 set(properties),
                 f"{path} contains keys not declared by the schema",
             )
+        elif isinstance(schema.get("additionalProperties"), dict):
+            additional_schema = schema["additionalProperties"]
+            for key, value in payload_dict.items():
+                if key not in properties:
+                    assert_matches_schema(testcase, value, additional_schema, f"{path}.{key}")
         for key, value in payload_dict.items():
             if key in properties:
                 assert_matches_schema(testcase, value, properties[key], f"{path}.{key}")
@@ -98,6 +104,17 @@ class CliManifestAndSchemaTests(unittest.TestCase):
         self.assertIn(
             "vcf", {artifact_type["name"] for artifact_type in types_payload["artifact_types"]}
         )
+
+        schema_code, schema_payload = run_cli_json(["schema"])
+        self.assertEqual(schema_code, 0)
+        self.assertIn("schema_version", schema_payload)
+        self.assertIn("artifact_result", {schema["name"] for schema in schema_payload["schemas"]})
+
+    def test_schema_command_emits_named_schema(self) -> None:
+        code, payload = run_cli_json(["schema", "artifact_result"])
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["title"], "ArtifactResult")
+        self.assertEqual(payload["type"], "object")
 
     def test_default_output_emits_json_for_non_interactive_stdout(self) -> None:
         code, payload = run_cli_json(["inspect", str(FIXTURES / "variants.vcf")])
@@ -199,6 +216,14 @@ class CliManifestAndSchemaTests(unittest.TestCase):
         artifact_schema = json.loads((ROOT / "schemas" / "artifact_result.schema.json").read_text())
         contract_schema = json.loads((ROOT / "schemas" / "contract_result.schema.json").read_text())
         manifest_schema = json.loads((ROOT / "schemas" / "manifest_result.schema.json").read_text())
+        summary_schema = json.loads((ROOT / "schemas" / "summary_result.schema.json").read_text())
+        contracts_schema = json.loads((ROOT / "schemas" / "contracts.schema.json").read_text())
+        artifact_types_schema = json.loads(
+            (ROOT / "schemas" / "artifact_types.schema.json").read_text()
+        )
+        schema_catalog_schema = json.loads(
+            (ROOT / "schemas" / "schema_catalog.schema.json").read_text()
+        )
 
         _, artifact = run_cli_json(["inspect", str(FIXTURES / "variants.vcf")])
         _, contract = run_cli_json(
@@ -207,10 +232,29 @@ class CliManifestAndSchemaTests(unittest.TestCase):
         _, manifest = run_cli_json(
             ["validate-manifest", str(FIXTURES / "workflow_manifest.pass.json")]
         )
+        _, summary = run_cli_json(["summarize", str(FIXTURES)])
+        _, contracts = run_cli_json(["contracts"])
+        _, artifact_types = run_cli_json(["types"])
+        _, schema_catalog = run_cli_json(["schema"])
 
         assert_matches_schema(self, artifact, artifact_schema)
         assert_matches_schema(self, contract, contract_schema)
         assert_matches_schema(self, manifest, manifest_schema)
+        assert_matches_schema(self, summary, summary_schema)
+        assert_matches_schema(self, contracts, contracts_schema)
+        assert_matches_schema(self, artifact_types, artifact_types_schema)
+        assert_matches_schema(self, schema_catalog, schema_catalog_schema)
+
+    def test_packaged_schemas_match_public_schema_files(self) -> None:
+        expected = {
+            path.name.removesuffix(".schema.json")
+            for path in (ROOT / "schemas").glob("*.schema.json")
+        }
+        self.assertEqual(set(available_schema_names()), expected)
+
+        for name in available_schema_names():
+            public_schema = json.loads((ROOT / "schemas" / f"{name}.schema.json").read_text())
+            self.assertEqual(get_schema(name), public_schema)
 
 
 if __name__ == "__main__":

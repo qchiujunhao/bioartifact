@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SchemaCatalog",
+  "type": "object",
+  "required": ["schema_version", "schemas"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "schemas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "title", "file", "description"],
+        "properties": {
+          "name": { "type": "string" },
+          "title": { "type": "string" },
+          "file": { "type": "string" },
+          "description": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -95,6 +95,13 @@ bioartifact contracts
 bioartifact types
 ```
 
+List available JSON schemas or print one schema:
+
+```bash
+bioartifact schema
+bioartifact schema artifact_result
+```
+
 Validate a workflow manifest:
 
 ```bash

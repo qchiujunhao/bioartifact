@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ArtifactTypes",
+  "type": "object",
+  "required": ["schema_version", "artifact_types"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "artifact_types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "extensions", "description", "usable_as"],
+        "properties": {
+          "name": { "type": "string" },
+          "extensions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": { "type": "string" },
+          "usable_as": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

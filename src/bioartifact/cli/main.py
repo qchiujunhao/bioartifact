@@ -9,6 +9,7 @@ from bioartifact.inspectors import inspect_artifact
 from bioartifact.json import dumps_json
 from bioartifact.manifest import validate_manifest
 from bioartifact.metadata import artifact_type_details, contract_details
+from bioartifact.schema_registry import available_schema_names, get_schema, schema_details
 from bioartifact.summarize import summarize_directory
 
 
@@ -70,6 +71,12 @@ def _validate_manifest(args: argparse.Namespace) -> int:
     result = validate_manifest(args.path, base_dir=args.base_dir)
     _print_payload(result, args)
     return 0 if result["passed"] else 1
+
+
+def _schema(args: argparse.Namespace) -> int:
+    payload = get_schema(args.name) if args.name else schema_details()
+    _print_payload(payload, args)
+    return 0
 
 
 def _add_output_arguments(parser: argparse.ArgumentParser) -> None:
@@ -135,6 +142,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     _add_output_arguments(manifest_parser)
     manifest_parser.set_defaults(func=_validate_manifest)
+
+    schema_parser = subparsers.add_parser("schema", help="list or print JSON schemas")
+    schema_parser.add_argument(
+        "name",
+        nargs="?",
+        choices=available_schema_names(),
+        help="schema name to print; omit to list available schemas",
+    )
+    _add_output_arguments(schema_parser)
+    schema_parser.set_defaults(func=_schema)
 
     return parser
 

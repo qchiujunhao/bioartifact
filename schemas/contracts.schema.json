@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Contracts",
+  "type": "object",
+  "required": ["schema_version", "contracts"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "description", "artifact_types", "arguments"],
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "artifact_types": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "arguments": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
