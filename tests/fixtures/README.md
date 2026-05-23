@@ -2,7 +2,7 @@
 
 This directory contains small deterministic bioinformatics artifact fixtures used
 by the test suite and suitable for reproducible examples in documentation and a
-publication examples.
+publication materials.
 
 The fixtures are synthetic but structurally valid examples of real file formats.
 They are intentionally tiny so they can be committed to the repository, reviewed
@@ -15,8 +15,12 @@ by humans, and exercised in CI without network access or large data downloads.
 - `reads_R1.fastq.gz`: gzip-compressed FASTQ generated from `reads_R1.fastq`.
 - `aligned.sorted.sam`: coordinate-sorted SAM file with a header and two reads.
 - `aligned.sorted.bam`: BGZF-compressed BAM generated from the SAM header.
+- `aligned.sorted.bam.bai`: placeholder BAM index used for manifest
+  relationship checks.
 - `variants.vcf`: small VCF with one sample and two variant records.
 - `variants.vcf.gz`: gzip-compressed VCF generated from `variants.vcf`.
+- `variants.vcf.gz.tbi`: placeholder VCF index used for manifest relationship
+  checks.
 - `regions.bed`: BED intervals.
 - `peaks.narrowPeak`: ENCODE-style narrowPeak intervals.
 - `annotation.gtf`: small GTF annotation.

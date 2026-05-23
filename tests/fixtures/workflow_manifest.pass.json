@@ -11,13 +11,25 @@
       "name": "sorted_alignment",
       "path": "aligned.sorted.bam",
       "type": "bam",
-      "contract": "sorted_bam"
+      "contract": "sorted_bam",
+      "requires": [
+        {
+          "name": "bam_index",
+          "suffix": ".bai"
+        }
+      ]
     },
     {
       "name": "variants",
       "path": "variants.vcf.gz",
       "type": "vcf",
-      "contract": "valid_vcf"
+      "contract": "valid_vcf",
+      "requires": [
+        {
+          "name": "tabix_index",
+          "suffix": ".tbi"
+        }
+      ]
     },
     {
       "name": "peaks",
@@ -33,4 +45,3 @@
     }
   ]
 }
-

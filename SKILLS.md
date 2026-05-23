@@ -108,6 +108,23 @@ Validate a workflow manifest:
 bioartifact validate-manifest workflow_manifest.json
 ```
 
+Use manifest `requires` entries for required companion files, such as BAM or VCF
+indexes:
+
+```json
+{
+  "outputs": [
+    {
+      "name": "alignment",
+      "path": "aligned.bam",
+      "type": "bam",
+      "contract": "sorted_bam",
+      "requires": [{ "name": "bam_index", "suffix": ".bai" }]
+    }
+  ]
+}
+```
+
 ## Agent Workflow
 
 1. Start with `bioartifact summarize OUTPUT_DIR --recursive` when the

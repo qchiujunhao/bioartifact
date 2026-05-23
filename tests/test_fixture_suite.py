@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -68,6 +69,7 @@ class FixtureSuiteTests(unittest.TestCase):
             ("reads_R1.fastq", "paired_fastq", {"mate": FIXTURES / "reads_R2.fastq"}),
             ("aligned.sorted.sam", "sorted_bam", {}),
             ("aligned.sorted.bam", "sorted_bam", {}),
+            ("aligned.sorted.bam", "indexed_bam", {}),
             ("variants.vcf.gz", "valid_vcf", {}),
             ("peaks.narrowPeak", "narrowpeak", {}),
             ("de_table.tsv", "de_table", {}),
@@ -83,7 +85,6 @@ class FixtureSuiteTests(unittest.TestCase):
             ("invalid/bad.narrowPeak", "narrowpeak"),
             ("invalid/bad_de_table.tsv", "de_table"),
             ("invalid/bad.vcf", "valid_vcf"),
-            ("aligned.sorted.bam", "indexed_bam"),
         ]
         for relative_path, contract_name in contracts:
             with self.subTest(relative_path=relative_path, contract_name=contract_name):
@@ -93,6 +94,13 @@ class FixtureSuiteTests(unittest.TestCase):
                 self.assertTrue(
                     any(check.remediation for check in result.checks if check.status == "fail")
                 )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            bam_without_index = Path(tmpdir) / "aligned.sorted.bam"
+            bam_without_index.write_bytes((FIXTURES / "aligned.sorted.bam").read_bytes())
+            result = validate_artifact(bam_without_index, "indexed_bam")
+            self.assertFalse(result.passed)
+            self.assertTrue(any(check.name == "index_present" for check in result.checks))
 
     def test_fixture_directory_summary(self) -> None:
         summary = summarize_directory(FIXTURES)

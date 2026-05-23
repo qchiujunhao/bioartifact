@@ -29,7 +29,82 @@
     },
     "outputs": {
       "type": "array",
-      "items": { "type": "object" }
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "path",
+          "expected_type",
+          "passed",
+          "inspection",
+          "type_check",
+          "contract",
+          "requirements",
+          "errors"
+        ],
+        "properties": {
+          "name": { "type": "string" },
+          "path": { "type": ["string", "null"] },
+          "expected_type": { "type": ["string", "null"] },
+          "passed": { "type": "boolean" },
+          "inspection": { "type": ["object", "null"] },
+          "type_check": {
+            "type": "object",
+            "required": ["passed", "message"],
+            "properties": {
+              "passed": { "type": "boolean" },
+              "message": { "type": "string" }
+            },
+            "additionalProperties": false
+          },
+          "contract": { "type": ["object", "null"] },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "path",
+                "expected_type",
+                "passed",
+                "exists",
+                "inspection",
+                "type_check",
+                "contract",
+                "errors"
+              ],
+              "properties": {
+                "name": { "type": "string" },
+                "path": { "type": ["string", "null"] },
+                "expected_type": { "type": ["string", "null"] },
+                "passed": { "type": "boolean" },
+                "exists": { "type": "boolean" },
+                "inspection": { "type": ["object", "null"] },
+                "type_check": {
+                  "type": ["object", "null"],
+                  "required": ["passed", "message"],
+                  "properties": {
+                    "passed": { "type": "boolean" },
+                    "message": { "type": "string" }
+                  },
+                  "additionalProperties": false
+                },
+                "contract": { "type": ["object", "null"] },
+                "errors": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
     },
     "errors": {
       "type": "array",

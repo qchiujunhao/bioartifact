@@ -163,6 +163,13 @@ class CliManifestAndSchemaTests(unittest.TestCase):
         self.assertTrue(result["passed"], result)
         self.assertEqual(result["schema_version"], "1.0.0")
         self.assertEqual(result["summary"], {"expected": 5, "passed": 5, "failed": 0, "missing": 0})
+        records_by_name = {record["name"]: record for record in result["outputs"]}
+        self.assertTrue(records_by_name["sorted_alignment"]["requirements"][0]["passed"])
+        self.assertEqual(
+            records_by_name["sorted_alignment"]["requirements"][0]["path"],
+            str(FIXTURES / "aligned.sorted.bam.bai"),
+        )
+        self.assertTrue(records_by_name["variants"]["requirements"][0]["passed"])
 
         code, payload = run_cli_json(
             ["validate-manifest", str(FIXTURES / "workflow_manifest.pass.json")]
@@ -181,6 +188,36 @@ class CliManifestAndSchemaTests(unittest.TestCase):
         self.assertIn("inspection failed", errors_by_name["missing_vcf"])
         self.assertIn("contract failed", errors_by_name["bad_fastq"])
         self.assertIn("artifact type mismatch", errors_by_name["wrong_type"])
+
+    def test_manifest_validation_fails_for_missing_required_companion_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            (root / "aligned.bam").write_bytes((FIXTURES / "aligned.sorted.bam").read_bytes())
+            manifest_path = root / "manifest.json"
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "outputs": [
+                            {
+                                "name": "alignment",
+                                "path": "aligned.bam",
+                                "type": "bam",
+                                "requires": [{"name": "bam_index", "suffix": ".bai"}],
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = validate_manifest(manifest_path)
+
+        self.assertFalse(result["passed"])
+        record = result["outputs"][0]
+        self.assertIn("requirement failed", record["errors"])
+        self.assertEqual(record["requirements"][0]["name"], "bam_index")
+        self.assertFalse(record["requirements"][0]["exists"])
+        self.assertEqual(record["requirements"][0]["errors"], ["required file missing"])
 
     def test_missing_unknown_override_and_malformed_gzip_inputs(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

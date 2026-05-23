@@ -263,10 +263,28 @@ Minimal JSON manifest:
       "type": "fastq",
       "contract": "paired_fastq",
       "mate": "reads_R2.fastq.gz"
+    },
+    {
+      "name": "alignment",
+      "path": "aligned.bam",
+      "type": "bam",
+      "contract": "sorted_bam",
+      "requires": [
+        {
+          "name": "bam_index",
+          "suffix": ".bai"
+        }
+      ]
     }
   ]
 }
 ```
+
+Use `requires` for companion files that must exist before downstream workflow
+steps can safely run. A requirement can provide an explicit `path`, or a
+`suffix` appended to the artifact path. Requirement objects may also include
+`type`, `contract`, and `contract_args` when the companion should be inspected
+or validated as a supported artifact.
 
 Run:
 
