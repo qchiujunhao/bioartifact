@@ -23,6 +23,31 @@ def _resolve_contract_args(raw_args: Any, base_dir: Path, entry: dict[str, Any])
     return contract_args
 
 
+def _summary(
+    *,
+    expected: int,
+    passed: int,
+    failed: int,
+    missing: int,
+    requirement_expected: int = 0,
+    requirement_passed: int = 0,
+    requirement_failed: int = 0,
+    requirement_missing: int = 0,
+) -> dict[str, Any]:
+    return {
+        "expected": expected,
+        "passed": passed,
+        "failed": failed,
+        "missing": missing,
+        "requirements": {
+            "expected": requirement_expected,
+            "passed": requirement_passed,
+            "failed": requirement_failed,
+            "missing": requirement_missing,
+        },
+    }
+
+
 def _load_manifest(path: Path) -> tuple[dict[str, Any] | None, list[str]]:
     try:
         text = path.read_text(encoding="utf-8")
@@ -62,12 +87,7 @@ def validate_manifest(path: str | Path, *, base_dir: str | Path | None = None) -
             "manifest": str(manifest_path),
             "base_dir": str(resolved_base),
             "passed": False,
-            "summary": {
-                "expected": 0,
-                "passed": 0,
-                "failed": 0,
-                "missing": 0,
-            },
+            "summary": _summary(expected=0, passed=0, failed=0, missing=0),
             "outputs": [],
             "errors": load_errors,
         }
@@ -79,12 +99,7 @@ def validate_manifest(path: str | Path, *, base_dir: str | Path | None = None) -
             "manifest": str(manifest_path),
             "base_dir": str(resolved_base),
             "passed": False,
-            "summary": {
-                "expected": 0,
-                "passed": 0,
-                "failed": 0,
-                "missing": 0,
-            },
+            "summary": _summary(expected=0, passed=0, failed=0, missing=0),
             "outputs": [],
             "errors": ["manifest must contain an `outputs` array"],
         }
@@ -92,6 +107,9 @@ def validate_manifest(path: str | Path, *, base_dir: str | Path | None = None) -
     records: list[dict[str, Any]] = []
     missing = 0
     passed_count = 0
+    requirement_expected = 0
+    requirement_passed_count = 0
+    requirement_missing = 0
 
     for index, entry in enumerate(outputs, start=1):
         if not isinstance(entry, dict):
@@ -160,6 +178,9 @@ def validate_manifest(path: str | Path, *, base_dir: str | Path | None = None) -
             contract_passed = contract_result.passed
 
         requirements = _validate_requirements(entry.get("requires"), artifact_path, resolved_base)
+        requirement_expected += len(requirements)
+        requirement_passed_count += sum(1 for requirement in requirements if requirement["passed"])
+        requirement_missing += sum(1 for requirement in requirements if not requirement["exists"])
         requirements_passed = all(requirement["passed"] for requirement in requirements)
 
         output_passed = inspection.valid and type_passed and contract_passed and requirements_passed
@@ -191,17 +212,22 @@ def validate_manifest(path: str | Path, *, base_dir: str | Path | None = None) -
         )
 
     failed_count = len(records) - passed_count
+    requirement_failed = requirement_expected - requirement_passed_count
     return {
         "schema_version": SCHEMA_VERSION,
         "manifest": str(manifest_path),
         "base_dir": str(resolved_base),
         "passed": failed_count == 0,
-        "summary": {
-            "expected": len(records),
-            "passed": passed_count,
-            "failed": failed_count,
-            "missing": missing,
-        },
+        "summary": _summary(
+            expected=len(records),
+            passed=passed_count,
+            failed=failed_count,
+            missing=missing,
+            requirement_expected=requirement_expected,
+            requirement_passed=requirement_passed_count,
+            requirement_failed=requirement_failed,
+            requirement_missing=requirement_missing,
+        ),
         "outputs": records,
         "errors": [],
     }

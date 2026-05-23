@@ -162,7 +162,16 @@ class CliManifestAndSchemaTests(unittest.TestCase):
         result = validate_manifest(FIXTURES / "workflow_manifest.pass.json")
         self.assertTrue(result["passed"], result)
         self.assertEqual(result["schema_version"], "1.0.0")
-        self.assertEqual(result["summary"], {"expected": 5, "passed": 5, "failed": 0, "missing": 0})
+        self.assertEqual(
+            result["summary"],
+            {
+                "expected": 5,
+                "passed": 5,
+                "failed": 0,
+                "missing": 0,
+                "requirements": {"expected": 2, "passed": 2, "failed": 0, "missing": 0},
+            },
+        )
         records_by_name = {record["name"]: record for record in result["outputs"]}
         self.assertTrue(records_by_name["sorted_alignment"]["requirements"][0]["passed"])
         self.assertEqual(
@@ -213,6 +222,10 @@ class CliManifestAndSchemaTests(unittest.TestCase):
             result = validate_manifest(manifest_path)
 
         self.assertFalse(result["passed"])
+        self.assertEqual(
+            result["summary"]["requirements"],
+            {"expected": 1, "passed": 0, "failed": 1, "missing": 1},
+        )
         record = result["outputs"][0]
         self.assertIn("requirement failed", record["errors"])
         self.assertEqual(record["requirements"][0]["name"], "bam_index")

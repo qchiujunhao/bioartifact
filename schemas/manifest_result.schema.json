@@ -18,12 +18,23 @@
     "passed": { "type": "boolean" },
     "summary": {
       "type": "object",
-      "required": ["expected", "passed", "failed", "missing"],
+      "required": ["expected", "passed", "failed", "missing", "requirements"],
       "properties": {
         "expected": { "type": "integer" },
         "passed": { "type": "integer" },
         "failed": { "type": "integer" },
-        "missing": { "type": "integer" }
+        "missing": { "type": "integer" },
+        "requirements": {
+          "type": "object",
+          "required": ["expected", "passed", "failed", "missing"],
+          "properties": {
+            "expected": { "type": "integer" },
+            "passed": { "type": "integer" },
+            "failed": { "type": "integer" },
+            "missing": { "type": "integer" }
+          },
+          "additionalProperties": false
+        }
       },
       "additionalProperties": false
     },

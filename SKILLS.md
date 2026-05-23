@@ -125,6 +125,10 @@ indexes:
 }
 ```
 
+When `requires` is present, check `summary.requirements` first for aggregate
+companion-file failures, then inspect failed output-level `requirements`
+records.
+
 ## Agent Workflow
 
 1. Start with `bioartifact summarize OUTPUT_DIR --recursive` when the

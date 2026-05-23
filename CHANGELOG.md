@@ -10,6 +10,8 @@ All notable changes to `bioartifact` will be documented in this file.
   artifact type discovery, and schema catalog output.
 - Added manifest `requires` checks for required companion files, such as BAM and
   VCF indexes.
+- Added requirement-level aggregate counts under manifest
+  `summary.requirements`.
 
 ## 0.1.0 - 2026-05-10
 
