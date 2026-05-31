@@ -9,7 +9,15 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "description", "artifact_types", "arguments"],
+        "required": [
+          "name",
+          "description",
+          "artifact_types",
+          "arguments",
+          "required_arguments",
+          "optional_arguments",
+          "output_schema"
+        ],
         "properties": {
           "name": { "type": "string" },
           "description": { "type": "string" },
@@ -20,6 +28,17 @@
           "arguments": {
             "type": "array",
             "items": { "type": "string" }
+          },
+          "required_arguments": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "optional_arguments": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "output_schema": {
+            "type": "string"
           }
         },
         "additionalProperties": false

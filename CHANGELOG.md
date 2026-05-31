@@ -12,6 +12,8 @@ All notable changes to `bioartifact` will be documented in this file.
   VCF indexes.
 - Added requirement-level aggregate counts under manifest
   `summary.requirements`.
+- Added machine-readable `required_arguments`, `optional_arguments`, and
+  `output_schema` fields to contract discovery output.
 
 ## 0.1.0 - 2026-05-10
 

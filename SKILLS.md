@@ -95,6 +95,10 @@ bioartifact contracts
 bioartifact types
 ```
 
+Use `bioartifact contracts` before validation when you need machine-readable
+contract metadata. Each contract lists `artifact_types`, `required_arguments`,
+`optional_arguments`, and `output_schema`.
+
 List available JSON schemas or print one schema:
 
 ```bash

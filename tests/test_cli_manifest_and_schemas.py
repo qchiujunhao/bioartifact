@@ -97,6 +97,12 @@ class CliManifestAndSchemaTests(unittest.TestCase):
         self.assertEqual(contract_code, 0)
         self.assertIn("schema_version", contracts_payload)
         self.assertIn("fastq", {contract["name"] for contract in contracts_payload["contracts"]})
+        contracts_by_name = {
+            contract["name"]: contract for contract in contracts_payload["contracts"]
+        }
+        self.assertEqual(contracts_by_name["paired_fastq"]["required_arguments"], ["mate"])
+        self.assertEqual(contracts_by_name["paired_fastq"]["output_schema"], "contract_result")
+        self.assertEqual(contracts_by_name["fastq"]["required_arguments"], [])
 
         types_code, types_payload = run_cli_json(["types"])
         self.assertEqual(types_code, 0)

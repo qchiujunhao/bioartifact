@@ -110,6 +110,10 @@ bioartifact contracts
 bioartifact types
 ```
 
+`bioartifact contracts` includes machine-readable metadata for each contract,
+including supported artifact types, required arguments such as `mate`, and the
+schema name emitted by validation results.
+
 List available JSON schemas or print a named schema:
 
 ```bash
