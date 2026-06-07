@@ -12,7 +12,7 @@
     "errors"
   ],
   "properties": {
-    "schema_version": { "type": "string" },
+    "schema_version": { "type": "string", "const": "1.0.0" },
     "path": { "type": "string" },
     "artifact_type": { "type": "string" },
     "valid": { "type": "boolean" },

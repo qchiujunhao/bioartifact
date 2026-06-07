@@ -23,6 +23,9 @@ class TtyStringIO(StringIO):
 def assert_matches_schema(
     testcase: unittest.TestCase, payload: object, schema: dict, path: str = "$"
 ) -> None:
+    if "const" in schema:
+        testcase.assertEqual(payload, schema["const"], path)
+
     if "enum" in schema:
         testcase.assertIn(payload, schema["enum"], path)
 

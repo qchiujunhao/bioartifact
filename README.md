@@ -321,8 +321,9 @@ bioartifact schema contract_result
 ```
 
 Schema files are intended to be part of the user-facing interface for the `1.x`
-line. Additive fields may be introduced in minor releases; breaking output
-changes require a new major schema version.
+line. Each schema pins the current `schema_version` value. Additive fields may
+be introduced in minor releases; breaking output changes require a new major
+schema version.
 
 ## CLI Exit Codes
 

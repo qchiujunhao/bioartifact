@@ -12,7 +12,7 @@
     "errors"
   ],
   "properties": {
-    "schema_version": { "type": "string" },
+    "schema_version": { "type": "string", "const": "1.0.0" },
     "manifest": { "type": "string" },
     "base_dir": { "type": "string" },
     "passed": { "type": "boolean" },

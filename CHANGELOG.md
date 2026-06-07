@@ -14,6 +14,8 @@ All notable changes to `bioartifact` will be documented in this file.
   `summary.requirements`.
 - Added machine-readable `required_arguments`, `optional_arguments`, and
   `output_schema` fields to contract discovery output.
+- Tightened public JSON schemas so `schema_version` is validated as the current
+  schema version constant.
 
 ## 0.1.0 - 2026-05-10
 
