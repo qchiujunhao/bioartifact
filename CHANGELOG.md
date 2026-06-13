@@ -18,6 +18,7 @@ All notable changes to `bioartifact` will be documented in this file.
   schema version constant.
 - Added a static project website under `docs/` with a GitHub Pages deployment
   workflow.
+- Refined the project website layout for a cleaner, less cluttered presentation.
 
 ## 0.1.0 - 2026-05-10
 

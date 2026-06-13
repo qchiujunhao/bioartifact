@@ -12,40 +12,40 @@
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="bioartifact home">
-        <span class="brand-mark" aria-hidden="true">ba</span>
-        <span>bioartifact</span>
-      </a>
-      <nav class="site-nav" aria-label="Primary navigation">
-        <a href="#features">Features</a>
-        <a href="#formats">Formats</a>
-        <a href="#schemas">Schemas</a>
-        <a href="#examples">Examples</a>
-        <a href="https://github.com/qchiujunhao/bioartifact">GitHub</a>
-      </nav>
+      <div class="wrap header-inner">
+        <a class="brand" href="#top" aria-label="bioartifact home">
+          <span class="brand-mark" aria-hidden="true">ba</span>
+          <span>bioartifact</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="#commands">Commands</a>
+          <a href="#coverage">Coverage</a>
+          <a href="#schemas">Schemas</a>
+          <a href="https://github.com/qchiujunhao/bioartifact">GitHub</a>
+        </nav>
+      </div>
     </header>
 
     <main id="top">
-      <section class="hero">
+      <section class="hero wrap">
         <div class="hero-copy">
-          <p class="eyebrow">Agent-friendly bioinformatics validation</p>
+          <p class="eyebrow">Bioinformatics artifact validation</p>
           <h1>bioartifact</h1>
           <p class="lead">
-            A lightweight Python package and command-line tool for inspecting
-            bioinformatics outputs, validating named contracts, and emitting
-            deterministic JSON for agents, workflows, benchmarks, and
-            reproducibility pipelines.
+            A lightweight Python package and CLI for inspecting workflow
+            outputs, validating named contracts, and returning deterministic
+            JSON for agents, benchmark systems, and reproducibility pipelines.
           </p>
-          <div class="hero-actions" aria-label="Primary actions">
+          <div class="actions" aria-label="Primary actions">
             <a class="button primary" href="https://github.com/qchiujunhao/bioartifact">
-              View repository
+              Repository
             </a>
-            <a class="button secondary" href="#examples">See CLI examples</a>
+            <a class="button secondary" href="#commands">CLI examples</a>
           </div>
         </div>
 
-        <div class="terminal-visual" aria-label="bioartifact inspect JSON example">
-          <div class="terminal-bar">
+        <figure class="terminal-visual" aria-label="bioartifact inspect JSON example">
+          <div class="terminal-bar" aria-hidden="true">
             <span></span>
             <span></span>
             <span></span>
@@ -59,83 +59,114 @@
     "records": 2,
     "sample_count": 1,
     "gzip": true
-  },
-  "usable_as": ["variants"]
+  }
 }</code></pre>
-        </div>
+        </figure>
       </section>
 
-      <section id="features" class="section">
-        <div class="section-heading">
-          <p class="eyebrow">What it does</p>
-          <h2>Structured checks for workflow artifacts</h2>
+      <section class="statement">
+        <div class="wrap statement-grid">
+          <p class="eyebrow">Purpose</p>
           <p>
-            bioartifact focuses on structure, compatibility, and downstream
-            usability. It does not interpret biological meaning or replace
-            format-specific tools.
+            bioartifact checks structure and workflow compatibility. It is not a
+            workflow engine, biological interpretation layer, or replacement for
+            tools such as samtools, bcftools, FastQC, or MultiQC.
           </p>
         </div>
-        <div class="feature-grid">
+      </section>
+
+      <section id="commands" class="section wrap">
+        <div class="section-heading">
+          <p class="eyebrow">CLI</p>
+          <h2>One command per decision</h2>
+        </div>
+        <div class="command-list">
           <article>
-            <h3>Inspect files</h3>
-            <p>Detect artifact type and summarize readable structural properties.</p>
+            <div>
+              <h3>Inspect one file</h3>
+              <p>Detect artifact type and summarize structural properties.</p>
+            </div>
+            <pre><code>bioartifact inspect sample.bam</code></pre>
           </article>
           <article>
-            <h3>Validate contracts</h3>
-            <p>Check files against named requirements such as FASTQ, VCF, or narrowPeak.</p>
+            <div>
+              <h3>Validate a contract</h3>
+              <p>Check whether an artifact satisfies a named requirement.</p>
+            </div>
+            <pre><code>bioartifact validate peaks.narrowPeak \
+  --contract narrowpeak</code></pre>
           </article>
           <article>
-            <h3>Validate manifests</h3>
-            <p>Assert expected workflow outputs, contracts, and required companion files.</p>
+            <div>
+              <h3>Summarize a directory</h3>
+              <p>Find detected artifacts and count output types.</p>
+            </div>
+            <pre><code>bioartifact summarize outputs/ \
+  --recursive</code></pre>
           </article>
           <article>
-            <h3>Expose schemas</h3>
-            <p>Discover JSON schemas and contract metadata directly from the CLI.</p>
+            <div>
+              <h3>Validate a workflow manifest</h3>
+              <p>Check expected outputs, contracts, and companion files.</p>
+            </div>
+            <pre><code>bioartifact validate-manifest \
+  workflow_manifest.json</code></pre>
           </article>
         </div>
       </section>
 
-      <section id="formats" class="section split-section">
+      <section id="coverage" class="section wrap coverage">
+        <div class="section-heading">
+          <p class="eyebrow">Coverage</p>
+          <h2>Formats and contracts</h2>
+        </div>
+        <div class="coverage-grid">
+          <div>
+            <h3>Artifact types</h3>
+            <ul class="tag-list" aria-label="Supported artifact types">
+              <li>FASTQ</li>
+              <li>FASTA</li>
+              <li>SAM</li>
+              <li>BAM</li>
+              <li>VCF</li>
+              <li>BED</li>
+              <li>narrowPeak</li>
+              <li>GTF</li>
+              <li>GFF</li>
+              <li>CSV</li>
+              <li>TSV</li>
+              <li>HTML</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Initial contracts</h3>
+            <ul class="plain-list">
+              <li>FASTQ structure and gzip readability</li>
+              <li>paired FASTQ synchronization</li>
+              <li>sorted and indexed BAM expectations</li>
+              <li>valid VCF structure and sample columns</li>
+              <li>narrowPeak coordinates and required columns</li>
+              <li>differential-expression table columns</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="schemas" class="section wrap schema-section">
         <div>
-          <p class="eyebrow">Supported artifacts</p>
-          <h2>Common bioinformatics outputs</h2>
+          <p class="eyebrow">Interface</p>
+          <h2>JSON by default</h2>
           <p>
-            Current inspectors cover sequencing reads, reference sequences,
-            alignments, variants, genomic intervals, annotations, tables, and
-            lightweight HTML reports.
+            Every command emits structured JSON unless human output is requested.
+            Discovery commands expose supported types, contracts, required
+            arguments, and public schemas.
           </p>
         </div>
-        <ul class="tag-list" aria-label="Supported artifact types">
-          <li>FASTQ</li>
-          <li>FASTA</li>
-          <li>SAM</li>
-          <li>BAM</li>
-          <li>VCF</li>
-          <li>BED</li>
-          <li>narrowPeak</li>
-          <li>GTF</li>
-          <li>GFF</li>
-          <li>CSV</li>
-          <li>TSV</li>
-          <li>HTML</li>
-        </ul>
-      </section>
-
-      <section id="schemas" class="section">
-        <div class="section-heading">
-          <p class="eyebrow">Machine-readable interface</p>
-          <h2>JSON by default, schemas on demand</h2>
-          <p>
-            Every command emits JSON by default. Public schemas pin
-            <code>schema_version</code>, and discovery commands describe
-            available artifact types, contracts, arguments, and schemas.
-          </p>
-        </div>
-        <div class="code-row">
-          <pre><code>$ bioartifact contracts
-$ bioartifact types
-$ bioartifact schema
-$ bioartifact schema contract_result</code></pre>
+        <div class="schema-code">
+          <pre><code>bioartifact contracts
+bioartifact types
+bioartifact schema
+bioartifact schema contract_result</code></pre>
           <pre><code>{
   "name": "paired_fastq",
   "artifact_types": ["fastq"],
@@ -145,41 +176,13 @@ $ bioartifact schema contract_result</code></pre>
         </div>
       </section>
 
-      <section id="examples" class="section">
-        <div class="section-heading">
-          <p class="eyebrow">Quickstart</p>
-          <h2>Install and validate</h2>
-        </div>
-        <div class="example-grid">
-          <div>
-            <h3>Install</h3>
-            <pre><code>pip install bioartifact</code></pre>
-          </div>
-          <div>
-            <h3>Inspect an artifact</h3>
-            <pre><code>bioartifact inspect sample.bam</code></pre>
-          </div>
-          <div>
-            <h3>Validate a contract</h3>
-            <pre><code>bioartifact validate peaks.narrowPeak \
-  --contract narrowpeak</code></pre>
-          </div>
-          <div>
-            <h3>Validate workflow outputs</h3>
-            <pre><code>bioartifact validate-manifest \
-  workflow_manifest.json</code></pre>
-          </div>
-        </div>
-      </section>
-
-      <section class="section manifest-section">
+      <section class="section wrap manifest-section">
         <div>
-          <p class="eyebrow">Workflow manifests</p>
-          <h2>Check expected outputs and companion files</h2>
+          <p class="eyebrow">Manifests</p>
+          <h2>Validate output sets</h2>
           <p>
-            Manifest validation can require companion artifacts such as BAM
-            indexes or tabix indexes. Requirement failures are summarized under
-            <code>summary.requirements</code>.
+            Manifest validation lets a workflow declare expected artifacts,
+            contracts, and required companion files such as BAM or VCF indexes.
           </p>
         </div>
         <pre><code>{
@@ -196,19 +199,40 @@ $ bioartifact schema contract_result</code></pre>
   ]
 }</code></pre>
       </section>
+
+      <section class="cta wrap">
+        <h2>Use bioartifact in a workflow check</h2>
+        <p>
+          Install the package, validate outputs, and route downstream steps from
+          deterministic JSON instead of ad hoc file-existence checks.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/qchiujunhao/bioartifact">
+            View source
+          </a>
+          <a
+            class="button secondary"
+            href="https://github.com/qchiujunhao/bioartifact/blob/main/README.md"
+          >
+            Read documentation
+          </a>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
-      <p>
-        MIT licensed. Source code and issue tracking are available on
-        <a href="https://github.com/qchiujunhao/bioartifact">GitHub</a>.
-      </p>
-      <p>
-        Documentation:
-        <a href="https://github.com/qchiujunhao/bioartifact/blob/main/README.md">README</a>,
-        <a href="https://github.com/qchiujunhao/bioartifact/blob/main/SKILLS.md">SKILLS.md</a>,
-        <a href="https://github.com/qchiujunhao/bioartifact/blob/main/PHASE_PLAN.md">Phase plan</a>.
-      </p>
+      <div class="wrap footer-inner">
+        <p>MIT licensed. Maintained by Junhao Qiu.</p>
+        <p>
+          <a href="https://github.com/qchiujunhao/bioartifact">GitHub</a>
+          <span aria-hidden="true">/</span>
+          <a href="https://github.com/qchiujunhao/bioartifact/blob/main/SKILLS.md">SKILLS.md</a>
+          <span aria-hidden="true">/</span>
+          <a href="https://github.com/qchiujunhao/bioartifact/blob/main/PHASE_PLAN.md">
+            Phase plan
+          </a>
+        </p>
+      </div>
     </footer>
   </body>
 </html>
