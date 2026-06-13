@@ -3,6 +3,8 @@
 `bioartifact` is a lightweight Python package and command-line tool for inspecting and
 validating bioinformatics output files in deterministic, machine-readable form.
 
+Project website: [https://qchiujunhao.github.io/bioartifact/](https://qchiujunhao.github.io/bioartifact/)
+
 The project targets AI agents, workflow systems, benchmark platforms, and
 reproducibility pipelines that need to answer practical questions:
 

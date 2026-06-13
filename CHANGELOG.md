@@ -16,6 +16,8 @@ All notable changes to `bioartifact` will be documented in this file.
   `output_schema` fields to contract discovery output.
 - Tightened public JSON schemas so `schema_version` is validated as the current
   schema version constant.
+- Added a static project website under `docs/` with a GitHub Pages deployment
+  workflow.
 
 ## 0.1.0 - 2026-05-10
 
