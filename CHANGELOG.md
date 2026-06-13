@@ -21,6 +21,7 @@ All notable changes to `bioartifact` will be documented in this file.
 - Added a static project website under `docs/` with a GitHub Pages deployment
   workflow.
 - Refined the project website layout for a cleaner, less cluttered presentation.
+- Reworked the website into a simpler documentation-style landing page.
 
 ## 0.1.0 - 2026-05-10
 
