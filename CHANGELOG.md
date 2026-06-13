@@ -4,6 +4,8 @@ All notable changes to `bioartifact` will be documented in this file.
 
 ## Unreleased
 
+## 0.1.1 - 2026-06-13
+
 - Added `bioartifact schema` for schema catalog discovery and named JSON schema
   output.
 - Added public JSON schemas for directory summaries, contract discovery,
