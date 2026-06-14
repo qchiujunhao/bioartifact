@@ -43,6 +43,7 @@ manifest = [
   "PyYAML>=6.0",
 ]
 dev = [
+  "jsonschema>=4.23",
   "pre-commit>=3.7",
   "pytest>=8.0",
   "ruff>=0.6",

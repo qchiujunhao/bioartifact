@@ -4,6 +4,9 @@ All notable changes to `bioartifact` will be documented in this file.
 
 ## Unreleased
 
+- Added Draft 2020-12 JSON Schema validation tests for public schemas and CLI
+  JSON outputs.
+
 ## 0.1.1 - 2026-06-13
 
 - Added `bioartifact schema` for schema catalog discovery and named JSON schema

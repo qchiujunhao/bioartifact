@@ -7,6 +7,8 @@ from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
 
+from jsonschema import Draft202012Validator
+
 from bioartifact import inspect_artifact, validate_manifest
 from bioartifact.cli.main import main
 from bioartifact.schema_registry import available_schema_names, get_schema
@@ -20,78 +22,28 @@ class TtyStringIO(StringIO):
         return True
 
 
-def assert_matches_schema(
-    testcase: unittest.TestCase, payload: object, schema: dict, path: str = "$"
-) -> None:
-    if "const" in schema:
-        testcase.assertEqual(payload, schema["const"], path)
-
-    if "enum" in schema:
-        testcase.assertIn(payload, schema["enum"], path)
-
-    schema_type = schema.get("type")
-    if isinstance(schema_type, list):
-        if payload is None and "null" in schema_type:
-            return
-        non_null_types = [value for value in schema_type if value != "null"]
-        testcase.assertTrue(
-            any(_matches_type(payload, value) for value in non_null_types),
-            f"{path} does not match any allowed type {schema_type}",
-        )
-    elif isinstance(schema_type, str):
-        testcase.assertTrue(_matches_type(payload, schema_type), f"{path} is not {schema_type}")
-
-    if schema_type == "object" or (isinstance(schema_type, list) and "object" in schema_type):
-        testcase.assertIsInstance(payload, dict, path)
-        payload_dict = payload if isinstance(payload, dict) else {}
-        required = set(schema.get("required", []))
-        testcase.assertLessEqual(required, set(payload_dict), f"{path} is missing required keys")
-
-        properties = schema.get("properties", {})
-        if schema.get("additionalProperties") is False:
-            testcase.assertLessEqual(
-                set(payload_dict),
-                set(properties),
-                f"{path} contains keys not declared by the schema",
-            )
-        elif isinstance(schema.get("additionalProperties"), dict):
-            additional_schema = schema["additionalProperties"]
-            for key, value in payload_dict.items():
-                if key not in properties:
-                    assert_matches_schema(testcase, value, additional_schema, f"{path}.{key}")
-        for key, value in payload_dict.items():
-            if key in properties:
-                assert_matches_schema(testcase, value, properties[key], f"{path}.{key}")
-
-    if schema_type == "array" or (isinstance(schema_type, list) and "array" in schema_type):
-        testcase.assertIsInstance(payload, list, path)
-        item_schema = schema.get("items")
-        if item_schema:
-            for index, item in enumerate(payload if isinstance(payload, list) else []):
-                assert_matches_schema(testcase, item, item_schema, f"{path}[{index}]")
-
-
-def _matches_type(payload: object, schema_type: str) -> bool:
-    if schema_type == "null":
-        return payload is None
-    if schema_type == "string":
-        return isinstance(payload, str)
-    if schema_type == "boolean":
-        return isinstance(payload, bool)
-    if schema_type == "integer":
-        return isinstance(payload, int) and not isinstance(payload, bool)
-    if schema_type == "object":
-        return isinstance(payload, dict)
-    if schema_type == "array":
-        return isinstance(payload, list)
-    return True
-
-
 def run_cli_json(args: list[str]) -> tuple[int, dict]:
     stdout = StringIO()
     with redirect_stdout(stdout):
         code = main(args)
     return code, json.loads(stdout.getvalue())
+
+
+def load_public_schema(name: str) -> dict:
+    return json.loads((ROOT / "schemas" / f"{name}.schema.json").read_text())
+
+
+def assert_matches_schema(testcase: unittest.TestCase, payload: object, schema: dict) -> None:
+    validator = Draft202012Validator(schema)
+    errors = sorted(validator.iter_errors(payload), key=lambda error: list(error.path))
+    if errors:
+        messages = []
+        for error in errors:
+            location = "$"
+            if error.path:
+                location += "".join(f"[{part!r}]" for part in error.path)
+            messages.append(f"{location}: {error.message}")
+        testcase.fail("\n".join(messages))
 
 
 class CliManifestAndSchemaTests(unittest.TestCase):
@@ -271,18 +223,19 @@ class CliManifestAndSchemaTests(unittest.TestCase):
             self.assertFalse(malformed.valid)
             self.assertTrue(malformed.errors)
 
-    def test_json_payloads_have_schema_required_keys(self) -> None:
-        artifact_schema = json.loads((ROOT / "schemas" / "artifact_result.schema.json").read_text())
-        contract_schema = json.loads((ROOT / "schemas" / "contract_result.schema.json").read_text())
-        manifest_schema = json.loads((ROOT / "schemas" / "manifest_result.schema.json").read_text())
-        summary_schema = json.loads((ROOT / "schemas" / "summary_result.schema.json").read_text())
-        contracts_schema = json.loads((ROOT / "schemas" / "contracts.schema.json").read_text())
-        artifact_types_schema = json.loads(
-            (ROOT / "schemas" / "artifact_types.schema.json").read_text()
-        )
-        schema_catalog_schema = json.loads(
-            (ROOT / "schemas" / "schema_catalog.schema.json").read_text()
-        )
+    def test_public_schemas_are_valid_draft_2020_12(self) -> None:
+        for schema_name in available_schema_names():
+            with self.subTest(schema_name=schema_name):
+                Draft202012Validator.check_schema(load_public_schema(schema_name))
+
+    def test_json_payloads_match_public_schemas(self) -> None:
+        artifact_schema = load_public_schema("artifact_result")
+        contract_schema = load_public_schema("contract_result")
+        manifest_schema = load_public_schema("manifest_result")
+        summary_schema = load_public_schema("summary_result")
+        contracts_schema = load_public_schema("contracts")
+        artifact_types_schema = load_public_schema("artifact_types")
+        schema_catalog_schema = load_public_schema("schema_catalog")
 
         _, artifact = run_cli_json(["inspect", str(FIXTURES / "variants.vcf")])
         _, contract = run_cli_json(
